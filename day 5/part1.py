@@ -1,22 +1,15 @@
-def seat(line):
-			row, seat = line[:7], line[7:]
-			
-			rows = list(range(128))
-			
-			for c in row:
-				if c == 'F': rows = rows[:len(rows) // 2]
-				if c == 'B': rows = rows[len(rows) // 2:]
-			
-			seats = list(range(8))
-			for c in seat:
-				if c == 'L': seats = seats[:len(seats) // 2]
-				if c == 'R': seats = seats[len(seats) // 2:]
+import re
+import functools
 
-			return rows[0] * 8 + seats[0]
+def to_decimal(s):
+	return functools.reduce(lambda x, y: x*2 + y, (c in 'BR' for c in s))
+
+def seat_id(row, col):
+	return row * 8 + col
 
 def main():
 	with open('input.txt') as f:
-		print(max((seat(line) for line in f)))
+		print(max((seat_id(*map(to_decimal, re.findall(r'([FB]+)([LR]+)', line)[0])) for line in f)))
 
 if __name__ == '__main__':
 	main()
